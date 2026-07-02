@@ -80,6 +80,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'sender': self.user.username
                 }))
 
+        # Directed WebRTC signaling
+        elif action_type in ['webrtc_offer', 'webrtc_answer', 'webrtc_ice_candidate']:
+            target_user = data.get('target_user')
+            target_channel = await database_sync_to_async(get_user_channel)(target_user)
+
+            if target_channel:
+                await self.channel_layer.send(
+                    target_channel,
+                    {
+                        'type': 'webrtc_signal',
+                        'action': action_type,
+                        'data': data.get('data'),
+                        'sender': self.user.username
+                    }
+                )
+
     async def broadcast_user_list(self):
         active_users_list = await database_sync_to_async(get_active_users)(self.room_name)
         await self.channel_layer.group_send(
@@ -108,4 +124,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'type': 'private_message',
             'sender': event['sender'],
             'message': event['message']
+        }))
+
+    async def webrtc_signal(self, event):
+        await self.send(text_data=json.dumps({
+            'type': event['action'],
+            'sender': event['sender'],
+            'data': event['data']
         }))
