@@ -19,6 +19,11 @@
             <select id="target-user">
                 <option value="">-- Select --</option>
             </select>
+            <button id="start-call-btn">Connect</button>
+        </div>
+        <div style="display: grid; gap: 10px; margin-bottom: 20px;">
+            <video id="local-video" autoplay playsinline muted style="width: 300px; height: 200px; background: #222;"></video>
+            <video id="remote-video" autoplay playsinline style="width: 300px; height: 200px; background: #222;"></video>
         </div>
         <p>Private chat</p>
         <textarea id="private-chat-log" cols="75" rows="6" readonly></textarea><br>
