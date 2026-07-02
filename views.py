@@ -24,19 +24,23 @@ def get_django_site(request):
 def index(request):
     # Determine the current site.
     current_site = get_django_site(request)
-    
+
     # Get rooms where the user is an owner OR participant on this site.
-    rooms = Room.objects.filter(
-        site=current_site
-    ).filter(
-        Q(owner=request.user) | Q(participants=request.user)
-    ).distinct()
-    
+    rooms = (
+        Room.objects.filter(site=current_site)
+        .filter(Q(owner=request.user) | Q(participants=request.user))
+        .distinct()
+    )
+
     # If rooms empty: return access denied!
 
-    return render(request, 'chat657/index.html', {
-        'rooms': rooms,
-    })
+    return render(
+        request,
+        'chat657/index.html',
+        {
+            'rooms': rooms,
+        },
+    )
 
 
 def room(request, room_name):

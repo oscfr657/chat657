@@ -6,8 +6,8 @@ from .utils import (
     get_active_users,
     set_user_channel,
     get_user_channel,
-    remove_user_channel
-    )
+    remove_user_channel,
+)
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -17,15 +17,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user = self.scope["user"]
 
         # Cache the user's channel
-        await database_sync_to_async(set_user_channel)(self.user.username, self.channel_name)
+        await database_sync_to_async(set_user_channel)(
+            self.user.username, self.channel_name
+        )
 
         # Mark user as active (synchronous function done asynchronously)
         await database_sync_to_async(mark_user_as_active)(self.room_name, self.user)
 
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
         # Send updated user list
@@ -34,10 +33,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         await database_sync_to_async(remove_user_channel)(self.user.username)
 
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         await self.broadcast_user_list()
 
     async def receive(self, text_data):
@@ -48,15 +44,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if action_type == 'chat_message':
             # Also update the cache when the user sends messages during the call
             await database_sync_to_async(mark_user_as_active)(self.room_name, self.user)
-            
+
             if data['message']:
                 await self.channel_layer.group_send(
                     self.room_group_name,
                     {
                         'type': 'chat_message',
                         'message': data['message'],
-                        'sender': self.user.username
-                    }
+                        'sender': self.user.username,
+                    },
                 )
 
         # Send private direct message
@@ -70,15 +66,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     {
                         'type': 'private_message',
                         'message': data['message'],
-                        'sender': self.user.username
-                    }
+                        'sender': self.user.username,
+                    },
                 )
                 # Send a copy back to the sender so it appears in their own log
-                await self.send(text_data=json.dumps({
-                    'type': 'private_message',
-                    'message': data['message'],
-                    'sender': self.user.username
-                }))
+                await self.send(
+                    text_data=json.dumps(
+                        {
+                            'type': 'private_message',
+                            'message': data['message'],
+                            'sender': self.user.username,
+                        }
+                    )
+                )
 
         # Directed WebRTC signaling
         elif action_type in ['webrtc_offer', 'webrtc_answer', 'webrtc_ice_candidate']:
@@ -92,43 +92,53 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         'type': 'webrtc_signal',
                         'action': action_type,
                         'data': data.get('data'),
-                        'sender': self.user.username
-                    }
+                        'sender': self.user.username,
+                    },
                 )
 
     async def broadcast_user_list(self):
-        active_users_list = await database_sync_to_async(get_active_users)(self.room_name)
+        active_users_list = await database_sync_to_async(get_active_users)(
+            self.room_name
+        )
         await self.channel_layer.group_send(
             self.room_group_name,
-            {
-                'type': 'user_list_update',
-                'users': active_users_list
-            }
+            {'type': 'user_list_update', 'users': active_users_list},
         )
 
     async def user_list_update(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'user_list_update',
-            'users': event['users']
-        }))
+        await self.send(
+            text_data=json.dumps({'type': 'user_list_update', 'users': event['users']})
+        )
 
     async def chat_message(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'chat_message',
-            'sender': event['sender'],
-            'message': event['message']
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    'type': 'chat_message',
+                    'sender': event['sender'],
+                    'message': event['message'],
+                }
+            )
+        )
 
     async def private_message(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'private_message',
-            'sender': event['sender'],
-            'message': event['message']
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    'type': 'private_message',
+                    'sender': event['sender'],
+                    'message': event['message'],
+                }
+            )
+        )
 
     async def webrtc_signal(self, event):
-        await self.send(text_data=json.dumps({
-            'type': event['action'],
-            'sender': event['sender'],
-            'data': event['data']
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    'type': event['action'],
+                    'sender': event['sender'],
+                    'data': event['data'],
+                }
+            )
+        )

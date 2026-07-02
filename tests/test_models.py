@@ -10,7 +10,7 @@ from chat657.models import Room
 class RoomModelTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='owner', password='password')
-        
+
         self.site_a = Site.objects.create(domain='site-a.com', name='Site A')
         self.site_b = Site.objects.create(domain='site-b.com', name='Site B')
 
