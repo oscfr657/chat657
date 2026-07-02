@@ -6,6 +6,9 @@
 
 ### 02 July 2026 ###
 
+    docs: Updated CHANGELOG.
+    build: version 0.0.1a0
+    chore: Black.
     doc: created a README.md and a CHANGELOG.md and added readme to pyproject.toml
     test: added a test_consumers test_private_message.
     ci: created files for a cicd-flow.
