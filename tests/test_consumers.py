@@ -66,3 +66,38 @@ class ChatConsumerTests(TransactionTestCase):
         # Disconnect
         await communicator_alice.disconnect()
         await communicator_bob.disconnect()
+
+    async def test_private_message(self):
+        """Tests that a private message only reaches the intended recipient."""
+        # Connect Alice and Bob
+        communicator_alice = await self.get_communicator(self.user_alice)
+        communicator_bob = await self.get_communicator(self.user_bob)
+        
+        await communicator_alice.receive_from() # Clear broadcast
+
+        # Alice sends a private message addressed to Bob
+        await communicator_alice.send_to(text_data=json.dumps({
+            'type': 'private_message',
+            'target_user': 'bob',
+            'message': 'Secret message for you, Bob.'
+        }))
+
+        # 1. Verify that Bob receives the private message
+        response_bob = await communicator_bob.receive_from()
+        response_bob_data = json.loads(response_bob)
+        
+        self.assertEqual(response_bob_data['type'], 'private_message')
+        self.assertEqual(response_bob_data['sender'], 'alice')
+        self.assertEqual(response_bob_data['message'], 'Secret message for you, Bob.')
+
+        # 2. Verify that Alice gets back a receipt of her own message
+        response_alice = await communicator_alice.receive_from()
+        response_alice_data = json.loads(response_alice)
+        
+        self.assertEqual(response_alice_data['type'], 'private_message')
+        self.assertEqual(response_alice_data['sender'], 'alice')
+        self.assertEqual(response_alice_data['message'], 'Secret message for you, Bob.')
+
+        # Disconnect
+        await communicator_alice.disconnect()
+        await communicator_bob.disconnect()
