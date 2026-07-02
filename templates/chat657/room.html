@@ -1,0 +1,29 @@
+{% block extra_head %}
+{% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <title>Chat room</title>
+{% endblock extra_head %}
+{% block content %}
+    <h2>Real-time chat</h2>
+    <div>
+        <strong>Room:</strong> <span >{{ room_name }}</span>
+    </div>
+    <div>
+        <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
+    </div>
+    <div>
+        <strong>In the chat:</strong><ul id="chat-users"></ul>
+    </div>
+    <div>
+        <textarea id="chat-log" rows="10" readonly style="max-width: 100%; width: 35em;"></textarea><br>
+        <input id="chat-message-input" type="text" size="50" style="max-width: 100%;"><br>
+        <button id="chat-message-submit">Send</button>
+    </div>
+{% endblock content %}
+{% block javascript %}
+{% endblock javascript %}
+<script>
+    const roomName = "{{ room_name }}";
+</script>
+<script src="{% static 'js/chat657/base.js' %}" async=""></script>
