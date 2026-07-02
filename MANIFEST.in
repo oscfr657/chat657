@@ -1,0 +1,5 @@
+include LICENSE.md
+include README.md
+recursive-include migrations/ *
+recursive-include static/ *
+recursive-include templates/ *

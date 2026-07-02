@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "chat657"
+dynamic = ["version"]
+authors = [
+  { name="Oscar F" },
+]
+description = "A simple chat."
+license = "MIT"
+license-files = [
+  "LICENSE.md",
+]
+requires-python = ">= 3.10"
+dependencies = [
+    "django",
+    "django-channels",
+    "channels-redis",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+
+[project.urls]
+repository = "https://github.com/oscfr657/chat657.git"
+
+[tool.setuptools]
+packages = ["chat657"]
+package-dir = {'chat657' = '.'}
+
+[tool.setuptools.package-data]
+chat657 = [
+  './migrations/*',
+  './static/*/*/*',
+  './static/*/*/*/*',
+  './templates/*',
+  './templates/*/*',
+  ]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION.txt"}
