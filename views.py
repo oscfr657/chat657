@@ -35,7 +35,7 @@ def index(request):
     # If rooms empty: return access denied!
 
     return render(request, 'chat657/index.html', {
-        'rooms': rooms
+        'rooms': rooms,
     })
 
 
@@ -49,5 +49,6 @@ def room(request, room_name):
 def private(request, room_name):
     context = {
         "room_name": room_name,
+        'stun_server': settings.STUN_SERVER_URL,
     }
     return render(request, "chat657/private.html", context)
