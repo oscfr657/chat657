@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -43,3 +44,10 @@ def room(request, room_name):
         "room_name": room_name,
     }
     return render(request, "chat657/room.html", context)
+
+
+def private(request, room_name):
+    context = {
+        "room_name": room_name,
+    }
+    return render(request, "chat657/private.html", context)

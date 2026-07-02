@@ -1,0 +1,36 @@
+{% block extra_head %}
+{% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <title>Private Chat</title>
+{% endblock extra_head %}
+
+{% block content %}
+    <h2>Real-time chat</h2>
+    <div>
+        <strong>Room:</strong> <span >{{ room_name }}</span>
+    </div>
+    <div>
+        <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
+    </div>
+    <div>
+        <div style="margin: 10px 0;">
+            <label for="target-user">Select user to connect:</label>
+            <select id="target-user">
+                <option value="">-- Select --</option>
+            </select>
+        </div>
+        <p>Private chat</p>
+        <textarea id="private-chat-log" cols="75" rows="6" readonly></textarea><br>
+        <input id="private-message-input" type="text" size="50"><br>
+        <button id="private-message-submit">Send</button>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+{% endblock javascript %}
+
+<script>
+    const roomName = "{{ room_name }}";
+</script>
