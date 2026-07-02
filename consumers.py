@@ -5,6 +5,7 @@ from .utils import (
     mark_user_as_active,
     get_active_users,
     set_user_channel,
+    get_user_channel,
     remove_user_channel
     )
 
@@ -58,6 +59,27 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
+        # Send private direct message
+        elif action_type == 'private_message':
+            target_user = data.get('target_user')
+            target_channel = await database_sync_to_async(get_user_channel)(target_user)
+
+            if target_channel and data['message']:
+                await self.channel_layer.send(
+                    target_channel,
+                    {
+                        'type': 'private_message',
+                        'message': data['message'],
+                        'sender': self.user.username
+                    }
+                )
+                # Send a copy back to the sender so it appears in their own log
+                await self.send(text_data=json.dumps({
+                    'type': 'private_message',
+                    'message': data['message'],
+                    'sender': self.user.username
+                }))
+
     async def broadcast_user_list(self):
         active_users_list = await database_sync_to_async(get_active_users)(self.room_name)
         await self.channel_layer.group_send(
@@ -77,6 +99,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
             'type': 'chat_message',
+            'sender': event['sender'],
+            'message': event['message']
+        }))
+
+    async def private_message(self, event):
+        await self.send(text_data=json.dumps({
+            'type': 'private_message',
             'sender': event['sender'],
             'message': event['message']
         }))
