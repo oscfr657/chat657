@@ -10,6 +10,7 @@ authors = [
   { name="Oscar F" },
 ]
 description = "A simple chat."
+readme = "README.md"
 license = "MIT"
 license-files = [
   "LICENSE.md",
