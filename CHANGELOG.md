@@ -4,6 +4,13 @@
 
 ## commits ##
 
+### 03 July 2026 ###
+
+    docs: Updated CHANGELOG.
+    build: version 0.0.2a0
+    fix: JS did not use websocket secure protocol.
+    chore: Cleanup and stun server example fix to README.
+
 ### 02 July 2026 ###
 
     docs: Updated CHANGELOG.
