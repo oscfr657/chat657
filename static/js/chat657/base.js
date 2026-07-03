@@ -1,8 +1,10 @@
 const currentUser = document.querySelector('#current-user').textContent;
 const chatUsers = document.querySelector('#chat-users');
 
+const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
 const roomSocket = new WebSocket(
-    'ws://'
+    wsProtocol
     + window.location.host
     + '/ws/chat/'
     + roomName

@@ -10,8 +10,10 @@ let localStream;
 let peerConnection;
 let activeTargetUser = null; // The person we are talking to right now
 
+const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
 const chatSocket = new WebSocket(
-    'ws://'
+    wsProtocol
     + window.location.host
     + '/ws/chat/'
     + roomName
@@ -116,7 +118,6 @@ async function createPeerConnection() {
         }
     };
     peerConnection.ontrack = event => {
-        console.log('test 0');
         remoteVideo.srcObject = event.streams[0];
     };
 };
