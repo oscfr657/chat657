@@ -2,17 +2,15 @@
 
 A simple "vibe coded" Django Channels powered text- and video-chat app.
 
-## Compatible ##
-
-### Requirements ###
+## Requirements ##
 
 * Django
 * Django-channels
 * Redis or KeyDB with Python-redis
 
-### Tested with ###
+## Tested with ##
 
-``` Python
+```
 django==6.0.5
 channels==4.3.2
 channels-redis==4.3.0
@@ -20,28 +18,29 @@ channels-redis==4.3.0
 
 ## Installation ###
 
-### Pyton requirements ###
+### Install with pip ###
 
-``` Python
-pip install -r requirements.txt
+``` bash
+pip install -U git+https://github.com/oscfr657/chat657.git@main
 ```
 
-#### Test requirements ####
+#### Optional test requirements ####
 
-``` Python
-pip install daphne
+``` bash
+pip install -U daphne
 ```
 
 ### Websocket ###
 
 #### nginx.conf ###
 
-``` ini
+sudo nano /etc/nginx/sites-available/devsite
+
+```
 server {
     # WebSocket traffic (requires specific headers)
     location /ws/ {
         proxy_http_version 1.1;
-#        proxy_pass http://devweb;
         proxy_pass http://unix:/run/gunicorn.sock;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $host;
@@ -51,13 +50,21 @@ server {
 }
 ```
 
+``` bash
+sudo ln -s /etc/nginx/sites-available/devsite /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
 #### Gunicorn with uvicorn ####
 
-``` Python
+``` bash
 pip install gunicorn uvicorn[standard]
 ```
 
-> sudo nano /etc/systemd/system/gunicorn.service
+``` bash
+sudo nano /etc/systemd/system/gunicorn.service
+```
 
 ``` ini
 [Unit]
@@ -78,15 +85,26 @@ ExecStart=/path/to/project/venv/bin/gunicorn project.asgi:application \
 WantedBy=multi-user.target
 ```
 
-> sudo systemctl start gunicorn
-> sudo systemctl enable gunicorn
+``` bash
+sudo systemctl start gunicorn
+sudo systemctl enable gunicorn
+sudo systemctl daemon-reload
+```
 
 ### Redis ###
 
 #### KeyDB with Python-redis ####
 
-https://docs.keydb.dev/docs/
+[KeyDB Docs](https://docs.keydb.dev/docs/)
 
+[Install from ppa-deb](https://docs.keydb.dev/docs/ppa-deb)
+
+``` bash
+echo "deb https://download.keydb.dev/open-source-dist $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/keydb.list
+sudo wget -O /etc/apt/trusted.gpg.d/keydb.gpg https://download.keydb.dev/open-source-dist/keyring.gpg
+sudo apt update
+sudo apt install keydb
+```
 
 ### Django settings ###
 
@@ -94,7 +112,7 @@ In the settings file,
 
 add to the INSTALLED_APPS
 
-``` Python
+``` python
 INSTALLED_APPS = [
     'django.contrib.sites',  # Don't forget this
 
@@ -102,11 +120,13 @@ INSTALLED_APPS = [
 ]
 ```
 
+``` python
 ASGI_APPLICATION = 'yourproject.asgi.application'
+```
 
 #### Configureation of Redis as Channel Layer ####
 
-``` Python
+``` python
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -119,8 +139,8 @@ CHANNEL_LAYERS = {
 
 #### Set a STUN server to use ####
 
-``` Python
-STUN_SERVER_URL = "stun.services.mozilla.com:3478"
+``` python
+STUN_SERVER_URL = "stun:stun.services.mozilla.com:3478"
 STUN_SERVER_URL = "stun:stun.l.google.com:19302"
 ```
 
@@ -173,7 +193,9 @@ application = ProtocolTypeRouter(
 
 ### Database configuration ###
 
-> python3 manage.py migrate
+``` bash
+python manage.py migrate
+```
 
 ### Collectstatic ###
 
@@ -181,13 +203,15 @@ application = ProtocolTypeRouter(
 python manage.py collectstatic
 ```
 
+sudo systemctl daemon-reload
+
 ## For development ##
 
 ### Testing ###
 
 In the settings file add daphne to the top of the INSTALLED_APPS
 
-``` Python
+``` python
 INSTALLED_APPS = [
     'daphne', # Important to be first!
 ]
@@ -227,15 +251,15 @@ Update CHANGELOG.md
 #### Build release ####
 
 ``` bash
-    python -m pip install build
-    python -m build --sdist
+python -m pip install build
+python -m build --sdist
 ```
 
 #### Publish to Git ####
 
-```Git
-   git commit -a -m 'Changelog message.'
-   git push
+``` bash
+git commit -a -m 'Changelog message.'
+git push
 ```
 
 ## TODO: ##
@@ -251,7 +275,7 @@ https://github.com/coturn/coturn
 
 Add TURN server settings
 
-``` Python
+``` python
 ICESERVERS = {
     'URLS': 'turn:din-server-ip.com:3478',
     'USERNAME': 'din_användare',
