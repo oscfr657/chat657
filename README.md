@@ -108,7 +108,11 @@ sudo apt install keydb
 
 ### Django settings ###
 
-In the settings file,
+In the settings file
+
+add your sites to the ALLOWED_HOSTS
+
+and 
 
 add to the INSTALLED_APPS
 
@@ -166,20 +170,17 @@ urlpatterns += [
 import os
 from django.core.asgi import get_asgi_application
 
-from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.security.websocket import AllowedHostsOriginValidator
-
-from chat657.routing import websocket_urlpatterns
-
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
-
 
 # Initialize Django ASGI application early to ensure the AppRegistry
 # is populated before importing code that may import ORM models.
 django_asgi_app = get_asgi_application()
 
+
+from channels.auth import AuthMiddlewareStack
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.security.websocket import AllowedHostsOriginValidator
+from chat657.routing import websocket_urlpatterns
 
 application = ProtocolTypeRouter(
     {
@@ -226,22 +227,20 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-#### Run tests ####
-
-Copy test_settings.py to your django project dir
-
-``` bash 
-python manage.py test chat657
-```
-
 #### Run black ####
 
 ``` bash
-python -m venv env 
+python3 -m venv env 
 source env/bin/activate
 python -m pip install black
 python -m black . -S -t py310 -t py311 -t py312 --extend-exclude .migrations --diff
 python -m black . -S -t py310 -t py311 -t py312 --extend-exclude .migrations
+```
+
+#### Run tests ####
+
+``` bash 
+python manage.py test chat657
 ```
 
 Update version in VERSION.txt
