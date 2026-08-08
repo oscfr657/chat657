@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -24,16 +24,12 @@ def get_django_site(request):
 def index(request):
     # Determine the current site.
     current_site = get_django_site(request)
-
     # Get rooms where the user is an owner OR participant on this site.
     rooms = (
         Room.objects.filter(site=current_site)
         .filter(Q(owner=request.user) | Q(participants=request.user))
         .distinct()
     )
-
-    # If rooms empty: return access denied!
-
     return render(
         request,
         'chat657/index.html',
@@ -44,15 +40,35 @@ def index(request):
 
 
 def room(request, room_name):
+    current_site = get_django_site(request)
+    room = (
+        Room.objects.filter(site=current_site)
+        .filter(Q(owner=request.user) | Q(participants=request.user))
+        .filter(slug=room_name)
+        .first()
+    )
+    if not room:
+        return redirect('index')
     context = {
-        "room_name": room_name,
+        "room_name": room.name,
+        "room_slug": room.slug,
     }
     return render(request, "chat657/room.html", context)
 
 
 def private(request, room_name):
+    current_site = get_django_site(request)
+    room = (
+        Room.objects.filter(site=current_site)
+        .filter(Q(owner=request.user) | Q(participants=request.user))
+        .filter(slug=room_name)
+        .first()
+    )
+    if not room:
+        return redirect('index')
     context = {
-        "room_name": room_name,
+        "room_name": room.name,
+        "room_slug": room.slug,
         'stun_server': settings.STUN_SERVER_URL,
     }
     return render(request, "chat657/private.html", context)
