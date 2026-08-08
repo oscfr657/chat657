@@ -24,8 +24,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if not self.domain:
             await self.close()
             return
-        
-        self.site_id = await self.get_site_id_and_verify_room(self.domain, self.room_name)
+
+        self.site_id = await self.get_site_id_and_verify_room(
+            self.domain, self.room_name
+        )
         if not self.site_id:
             await self.close()
             return
@@ -49,7 +51,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
         # Mark user as active (synchronous function done asynchronously)
-        await database_sync_to_async(mark_user_as_active)(self.site_id, self.room_name, self.user)
+        await database_sync_to_async(mark_user_as_active)(
+            self.site_id, self.room_name, self.user
+        )
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -67,9 +71,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         if hasattr(self, 'room_group_name'):
-            await database_sync_to_async(remove_user_channel)(self.site_id, self.user.username)
+            await database_sync_to_async(remove_user_channel)(
+                self.site_id, self.user.username
+            )
 
-            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+            await self.channel_layer.group_discard(
+                self.room_group_name, self.channel_name
+            )
             await self.broadcast_user_list()
 
     async def receive(self, text_data):
@@ -79,7 +87,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Group chat
         if action_type == 'chat_message':
             # Also update the cache when the user sends messages during the call
-            await database_sync_to_async(mark_user_as_active)(self.site_id, self.room_name, self.user)
+            await database_sync_to_async(mark_user_as_active)(
+                self.site_id, self.room_name, self.user
+            )
 
             if data['message']:
                 await self.channel_layer.group_send(
@@ -94,7 +104,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Send private direct message
         elif action_type == 'private_message':
             target_user = data.get('target_user')
-            target_channel = await database_sync_to_async(get_user_channel)(self.site_id, target_user)
+            target_channel = await database_sync_to_async(get_user_channel)(
+                self.site_id, target_user
+            )
 
             if target_channel and data['message']:
                 await self.channel_layer.send(
@@ -119,7 +131,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Directed WebRTC signaling
         elif action_type in ['webrtc_offer', 'webrtc_answer', 'webrtc_ice_candidate']:
             target_user = data.get('target_user')
-            target_channel = await database_sync_to_async(get_user_channel)(self.site_id, target_user)
+            target_channel = await database_sync_to_async(get_user_channel)(
+                self.site_id, target_user
+            )
 
             if target_channel:
                 await self.channel_layer.send(
@@ -134,8 +148,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def broadcast_user_list(self):
         active_users_list = await database_sync_to_async(get_active_users)(
-            self.site_id,
-            self.room_name
+            self.site_id, self.room_name
         )
         await self.channel_layer.group_send(
             self.room_group_name,
