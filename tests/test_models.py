@@ -1,10 +1,11 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 
 from chat657.models import Room
+
+User = get_user_model()
 
 
 class RoomModelTests(TestCase):

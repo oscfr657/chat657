@@ -1,10 +1,12 @@
 import json
 from django.core.cache import cache
 from django.test import TransactionTestCase
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from channels.testing import WebsocketCommunicator
 
 from chat657.consumers import ChatConsumer
+
+User = get_user_model()
 
 
 class ChatConsumerTests(TransactionTestCase):
