@@ -4,6 +4,16 @@
 
 ## commits ##
 
+### 08 Aug 2026 ###
+
+    docs: Updated CHANGELOG.
+    build: version 0.1.0a0
+    chore: Black
+    doc: Improved and fixed README
+    feat: made consumers Site aware
+    feat: made Room and Private views Site aware and improved logic and templates.
+    refactor: Changed from User to settings.AUTH_USER_MODEL
+
 ### 03 July 2026 ###
 
     docs: Updated CHANGELOG.
