@@ -27,29 +27,22 @@ class ChatConsumerTests(TransactionTestCase):
         self.user_bob = User.objects.create_user(username='bob', password='password')
 
         self.site, created = Site.objects.get_or_create(
-            domain='testhost', 
-            defaults={'name': 'Test Site'}
+            domain='testhost', defaults={'name': 'Test Site'}
         )
 
         self.room_name = 'test-room'
 
         self.room = Room.objects.create(
-            name=self.room_name,
-            site=self.site,
-            owner=self.user_alice
-            )
+            name=self.room_name, site=self.site, owner=self.user_alice
+        )
         self.room.participants.add(self.user_alice)
         self.room.participants.add(self.user_bob)
 
     async def get_communicator(self, user):
         """Helper function to connect a user to the consumer."""
-        headers = [
-            (b'host', b'testhost')
-        ]
+        headers = [(b'host', b'testhost')]
         communicator = WebsocketCommunicator(
-            ChatConsumer.as_asgi(),
-            f'/ws/chat/{self.room_name}/',
-            headers=headers
+            ChatConsumer.as_asgi(), f'/ws/chat/{self.room_name}/', headers=headers
         )
         communicator.scope['user'] = user
         communicator.scope['url_route'] = {'kwargs': {'room_name': self.room_name}}

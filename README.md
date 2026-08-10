@@ -231,8 +231,8 @@ python manage.py migrate
 python3 -m venv env 
 source env/bin/activate
 python -m pip install black
-python -m black . -S -t py310 -t py311 -t py312 --extend-exclude .migrations --diff
-python -m black . -S -t py310 -t py311 -t py312 --extend-exclude .migrations
+python -m black . -S -t py311 -t py312 -t py313 --extend-exclude .migrations --diff
+python -m black . -S -t py311 -t py312 -t py313 --extend-exclude .migrations
 ```
 
 #### Run tests ####
