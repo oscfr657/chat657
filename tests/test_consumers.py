@@ -2,9 +2,12 @@ import json
 from django.core.cache import cache
 from django.test import TransactionTestCase
 from django.contrib.auth import get_user_model
+from django.contrib.sites.models import Site
+
 from channels.testing import WebsocketCommunicator
 
 from chat657.consumers import ChatConsumer
+from chat657.models import Room
 
 User = get_user_model()
 
@@ -23,24 +26,36 @@ class ChatConsumerTests(TransactionTestCase):
         )
         self.user_bob = User.objects.create_user(username='bob', password='password')
 
+        self.site, created = Site.objects.get_or_create(
+            domain='testhost', 
+            defaults={'name': 'Test Site'}
+        )
+
         self.room_name = 'test-room'
+
+        self.room = Room.objects.create(
+            name=self.room_name,
+            site=self.site,
+            owner=self.user_alice
+            )
+        self.room.participants.add(self.user_alice)
+        self.room.participants.add(self.user_bob)
 
     async def get_communicator(self, user):
         """Helper function to connect a user to the consumer."""
+        headers = [
+            (b'host', b'testhost')
+        ]
         communicator = WebsocketCommunicator(
-            ChatConsumer.as_asgi(), f"/ws/chat/{self.room_name}/"
+            ChatConsumer.as_asgi(),
+            f'/ws/chat/{self.room_name}/',
+            headers=headers
         )
-
-        # Mock the scope so that the consumer thinks the user is logged in
-        communicator.scope["user"] = user
-        communicator.scope["url_route"] = {"kwargs": {"room_name": self.room_name}}
-
+        communicator.scope['user'] = user
+        communicator.scope['url_route'] = {'kwargs': {'room_name': self.room_name}}
         connected, subprotocol = await communicator.connect()
         self.assertTrue(connected)
-
-        # Consume the first message (user_list_update) sent on connect
         await communicator.receive_from()
-
         return communicator
 
     async def test_chat_message(self):
