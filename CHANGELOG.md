@@ -4,6 +4,16 @@
 
 ## commits ##
 
+### 10 Aug 2026 ###
+
+    docs: Updated CHANGELOG
+    build: version 0.1.1a0
+    chore: Black
+    chore: clean up README
+    chore: clean up of the room model
+    fix: consumers tests bugs
+    fix: consumers async bug
+
 ### 08 Aug 2026 ###
 
     docs: Updated CHANGELOG.
