@@ -23,6 +23,7 @@ views.py
 ./views.py
 ./migrations/0001_initial.py
 ./migrations/0002_alter_room_participants.py
+./migrations/0003_alter_room_participants.py
 ./migrations/__init__.py
 ./static/js/chat657/base.js
 ./static/js/chat657/private.js
@@ -36,6 +37,7 @@ chat657.egg-info/requires.txt
 chat657.egg-info/top_level.txt
 migrations/0001_initial.py
 migrations/0002_alter_room_participants.py
+migrations/0003_alter_room_participants.py
 migrations/__init__.py
 static/js/chat657/base.js
 static/js/chat657/private.js
