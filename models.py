@@ -17,8 +17,6 @@ class Room(models.Model):
     participants = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name='joined_rooms',
-        blank=True,
-        null=True,
         verbose_name="Participants",
     )
 
