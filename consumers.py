@@ -35,13 +35,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f'chat_site_{self.site_id}_room_{self.room_name}'
         self.user = self.scope["user"]
 
-        rooms = (
-            Room.objects.filter(site=self.site_id)
-            .filter(Q(owner=self.user) | Q(participants=self.user))
-            .filter(slug=self.room_name)
-            .first()
+        self.room_access = await self.get_user_room_access(
+            self.user, self.room_name, self.site_id
         )
-        if not rooms:
+        if not self.room_access:
             await self.close()
             return
 
@@ -201,3 +198,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return site.id
         except ObjectDoesNotExist:
             return None
+
+    @database_sync_to_async
+    def get_user_room_access(self, user, room_name, site_id):
+        try:
+            room_access = (
+                Room.objects.filter(site=site_id)
+                .filter(Q(owner=user) | Q(participants=user))
+                .filter(slug=room_name)
+                .exists()
+            )
+            return room_access
+        except ObjectDoesNotExist:
+            return False
