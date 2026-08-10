@@ -204,8 +204,6 @@ python manage.py migrate
 python manage.py collectstatic
 ```
 
-sudo systemctl daemon-reload
-
 ## For development ##
 
 ### Testing ###
