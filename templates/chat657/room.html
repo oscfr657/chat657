@@ -1,13 +1,15 @@
+{% extends "base.html" %}
 {% block extra_head %}
 {% load static %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/chat657/base.css' %}" >
     <title>Chat room</title>
 {% endblock extra_head %}
 {% block content %}
-    <h2>Chat657</h2>
-    <h3><a href="/chat/">Rooms</a></h3>
-    <h4>Room: {{ room_name }}</h4>
+<div class="chat657">
+    <h2><a href="/chat/">Rooms</a></h2>
+    <h3>Room: {{ room_name }} - <a href="private/">Private chat</a> - <a href="video/">Video</a></h3>
     <div>
         <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
     </div>
@@ -19,10 +21,9 @@
         <input id="chat-message-input" type="text" size="50" style="max-width: 100%;"><br>
         <button id="chat-message-submit">Send</button>
     </div>
-{% endblock content %}
-{% block javascript %}
-{% endblock javascript %}
+</div>
 <script>
     const roomName = "{{ room_slug }}";
 </script>
 <script src="{% static 'js/chat657/base.js' %}" async=""></script>
+{% endblock content %}
