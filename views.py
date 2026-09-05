@@ -72,3 +72,21 @@ def private(request, room_name):
         'stun_server': settings.STUN_SERVER_URL,
     }
     return render(request, "chat657/private.html", context)
+
+
+def video(request, room_name):
+    current_site = get_django_site(request)
+    room = (
+        Room.objects.filter(site=current_site)
+        .filter(Q(owner=request.user) | Q(participants=request.user))
+        .filter(slug=room_name)
+        .first()
+    )
+    if not room:
+        return redirect('index')
+    context = {
+        "room_name": room.name,
+        "room_slug": room.slug,
+        'stun_server': settings.STUN_SERVER_URL,
+    }
+    return render(request, "chat657/video.html", context)

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block extra_head %}
+{% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/chat657/base.css' %}" >
+    <title>Video Chat</title>
+{% endblock extra_head %}
+{% block content %}
+<div class="chat657">
+    <h2><a href="/chat/">Rooms</a></h2>
+    <h3>Room: <a href="{% url 'room' room_slug %}">{{ room_name }}</a></h3>
+    <div>
+        <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
+    </div>
+    <div id="video-grid">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <div id="remoteVideos"></div>
+    </div>
+</div>
+<script>
+    const roomName = "{{ room_slug }}";
+    const stunServerUrl = "{{ stun_server }}";
+</script>
+<script src="{% static 'js/chat657/video.js' %}" async=""></script>
+{% endblock %}
