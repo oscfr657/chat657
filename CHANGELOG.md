@@ -4,6 +4,15 @@
 
 ## commits ##
 
+### 05 Sep 2026 ###
+
+    docs: updated CHANGELOG
+    build: version 0.2.0a0
+    chore: Black
+    feat: added video group chat
+    feat: templates now extends base.html and other design improvements
+    feat: improved pyproject with updated python version
+
 ### 10 Aug 2026 ###
 
     docs: Updated CHANGELOG
