@@ -11,7 +11,8 @@ A simple "vibe coded" Django Channels powered text- and video-chat app.
 ## Tested with ##
 
 ```
-django==6.0.5
+Python==3.14
+django==6.0.8
 channels==4.3.2
 channels-redis==4.3.0
 ```
@@ -228,7 +229,8 @@ python manage.py migrate
 #### Run black ####
 
 ``` bash
-python3 -m venv env 
+sudo apt install python3-venv
+python3 -m venv env
 source env/bin/activate
 python -m pip install black
 python -m black . -S -t py311 -t py312 -t py313 --extend-exclude .migrations --diff
