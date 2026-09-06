@@ -16,29 +16,24 @@ const rtcConfig = {
         { 'urls': stunServerUrl }
     ]
 };
-
-navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-.then(stream => {
-    localStream = stream;
-    localVideo.srcObject = stream;
-})
-.catch(error => console.error("Could not retrieve media", error));
-
+async function getMedia() {
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideo.srcObject = localStream;
+    } catch (err) {
+        console.error("Could not retrieve media", err);
+    }
+};
 chatSocket.onmessage = async function(event) {
+    if (!localStream) {
+        await getMedia();
+    }
     const message = JSON.parse(event.data);
     const actionType = message.type;
     const sender = message.sender;
     switch (actionType) {
         case 'user_list_update':
             const activeUsers = message.users;
-            for (const peerUser in peers) {
-                if (!activeUsers.includes(peerUser)) {
-                    peers[peerUser].close();
-                    delete peers[peerUser];
-                    const videoEl = document.getElementById(`video-${peerUser}`);
-                    if (videoEl) videoEl.remove();
-                }
-            }
             for (const user of activeUsers) {
                 if (user !== currentUser && !peers[user]) {
                     await createPeerConnection(user);
@@ -49,6 +44,14 @@ chatSocket.onmessage = async function(event) {
                         'target_user': user,
                         'data': offer 
                     }));
+                }
+            }
+            for (const peerUser in peers) {
+                if (!activeUsers.includes(peerUser)) {
+                    peers[peerUser].close();
+                    delete peers[peerUser];
+                    const videoEl = document.getElementById(`video-${peerUser}`);
+                    if (videoEl) videoEl.remove();
                 }
             }
             break;
@@ -81,12 +84,23 @@ chatSocket.onmessage = async function(event) {
 
 async function createPeerConnection(peerUser) {
     if (peers[peerUser]) return;
-    pc = new RTCPeerConnection(rtcConfig);
-    peers[peerUser] = pc;
-    if (localStream) {
-        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-    }
-    pc.onicecandidate = event => {
+    const peerConnection = new RTCPeerConnection(rtcConfig);
+    peers[peerUser] = peerConnection;
+    peerConnection.oniceconnectionstatechange = () => {
+        if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+            console.log(`Anslutningen till ${peerUser} bröts oväntat.`);
+            if (peers[peerUser]) {
+                peers[peerUser].close();
+                delete peers[peerUser];
+            }
+            const videoEl = document.getElementById(`video-${peerUser}`);
+            if (videoEl) videoEl.remove();
+        }
+    };
+    localStream.getTracks().forEach(track => {
+        peerConnection.addTrack(track, localStream);
+    });
+    peerConnection.onicecandidate = event => {
         if (event.candidate) {
             chatSocket.send(JSON.stringify({
                 'type': 'webrtc_ice_candidate',
@@ -95,7 +109,7 @@ async function createPeerConnection(peerUser) {
             }));
         }
     };
-    pc.ontrack = (event) => {
+    peerConnection.ontrack = (event) => {
         if (!document.getElementById(`video-${peerUser}`)) {
             const newVideo = document.createElement('video');
             newVideo.id = `video-${peerUser}`;
