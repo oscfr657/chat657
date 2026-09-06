@@ -4,6 +4,12 @@
 
 ## commits ##
 
+### 06 Sep 2026 ###
+
+    docs: updated CHANGELOG
+    build: version 0.2.1a0
+    fix: video chat connectivity instability
+
 ### 05 Sep 2026 ###
 
     docs: updated CHANGELOG
