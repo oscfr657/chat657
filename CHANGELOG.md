@@ -4,6 +4,12 @@
 
 ## commits ##
 
+### 04 Oct 2026 ###
+
+    docs: updated CHANGELOG
+    build: version 0.2.2a0
+    chore: urls now with app_name chat657 and index url name changed to chat
+
 ### 06 Sep 2026 ###
 
     docs: updated CHANGELOG
