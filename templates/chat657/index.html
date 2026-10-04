@@ -12,7 +12,7 @@
     <ul>
         {% for room in rooms %}
             <li>
-                <strong><a href="{% url 'room' room.slug %}">{{ room.name }}</a></strong>
+                <strong><a href="{% url 'chat657:room' room.slug %}">{{ room.name }}</a></strong>
                 <br>
                 <small>
                     Role: {% if room.owner == user %}Owner{% else %}Participant{% endif %} | 
