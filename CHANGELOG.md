@@ -4,6 +4,12 @@
 
 ## commits ##
 
+### 06 Oct 2026 ###
+
+    docs: updated CHANGELOG
+    build: version 0.2.3a0
+    feat: improved design
+
 ### 04 Oct 2026 ###
 
     docs: updated CHANGELOG
