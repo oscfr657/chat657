@@ -8,18 +8,19 @@
 {% endblock extra_head %}
 {% block content %}
 <div class="chat657">
-    <h2><a href="{% url 'chat657:chat' %}">Rooms</a></h2>
-    <h3>Room: {{ room_name }} - <a href="{% url 'chat657:private' room_slug %}">Private chat</a> - <a href="{% url 'chat657:video' room_slug %}">Video</a></h3>
-    <div>
-        <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
-    </div>
-    <div>
-        <strong>In the chat:</strong><ul id="chat-users"></ul>
-    </div>
-    <div>
-        <textarea id="chat-log" rows="10" readonly style="max-width: 100%; width: 35em;"></textarea><br>
-        <input id="chat-message-input" type="text" size="50" style="max-width: 100%;"><br>
-        <button id="chat-message-submit">Send</button>
+    <div id="chat-room">
+        <h2><a href="{% url 'chat657:chat' %}">Rooms</a> - {{ room_name }} - <a href="{% url 'chat657:private' room_slug %}">Private chat</a> - <a href="{% url 'chat657:video' room_slug %}">Video</a></h2>
+        <div>
+            <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
+        </div>
+        <div>
+            <strong>In the chat:</strong><ul id="chat-users"></ul>
+        </div>
+        <div>
+            <textarea id="chat-log" rows="10" readonly style="max-width: 100%; width: 35em;"></textarea><br>
+            <input id="chat-message-input" type="text" size="50" style="max-width: 100%;"><br>
+            <button id="chat-message-submit">Send</button>
+        </div>
     </div>
 </div>
 <script>

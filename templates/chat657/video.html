@@ -8,14 +8,12 @@
 {% endblock extra_head %}
 {% block content %}
 <div class="chat657">
-    <h2><a href="{% url 'chat657:chat' %}">Rooms</a></h2>
-    <h3>Room: <a href="{% url 'chat657:room' room_slug %}">{{ room_name }}</a></h3>
-    <div>
-        <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
-    </div>
-    <div id="video-grid">
-        <video id="localVideo" autoplay muted playsinline></video>
-        <div id="remoteVideos"></div>
+    <h2><a href="{% url 'chat657:chat' %}">Rooms</a> - <a href="{% url 'chat657:room' room_slug %}">{{ room_name }}</a></h2>
+    <div id="videoGrid">
+        <div id="user-{{ user.username }}">
+            <p id="current-user">{{ user.username }}</p>
+            <video id="localVideo" autoplay muted playsinline></video>
+        </div>
     </div>
 </div>
 <script>

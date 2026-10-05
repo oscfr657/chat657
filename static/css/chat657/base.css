@@ -1,5 +1,55 @@
 .chat657 {
     min-height: 67vh;
-    max-width: 420px;
     margin: auto;
+}
+.chat657 > h2 {
+    text-align: center;
+}
+.chat657 ul {
+    margin: auto;
+    width: fit-content;
+}
+
+#chat-room {
+    margin: auto;
+    width: fit-content;
+}
+
+#videoGrid p {
+    height: 0px;
+    font-size: 1rem;
+    text-shadow: #000 1px 1px 1px;
+    position: relative;
+    color: white;
+    top: 0.5rem;
+    left: 1rem;
+}
+#videoGrid > div {
+    margin: auto;
+    width: fit-content;
+}
+#videoGrid video {
+    max-height: 50vh;
+    background: #222;
+}
+video#localVideo {
+    max-width: 30vw;
+    max-height: 30vh;
+    min-width: 300px;
+}
+
+#private-chat {
+    margin: auto;
+    width: fit-content;
+}
+#private-chat #remote-video,
+#private-chat #local-video {
+    width: 300px;
+    height: 200px;
+    background: #222;
+}
+#private-chat p#current-user {
+    color: white;
+    text-shadow: black 1px 1px 0;
+    position: absolute;
 }

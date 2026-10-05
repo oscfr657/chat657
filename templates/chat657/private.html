@@ -8,12 +8,8 @@
 {% endblock extra_head %}
 {% block content %}
 <div class="chat657">
-    <h2><a href="/chat/">Rooms</a></h2>
-    <h3>Room: <a href="{% url 'chat657:room' room_slug %}">{{ room_name }}</a></h3>
-    <div>
-        <strong>Logged in as:</strong> <span id="current-user">{{ user.username }}</span>
-    </div>
-    <div>
+    <h2><a href="{% url 'chat657:chat' %}">Rooms</a> - <a href="{% url 'chat657:room' room_slug %}">{{ room_name }}</a></h2>
+    <div id="private-chat">
         <div style="margin: 10px 0;">
             <label for="target-user">Select user to connect:</label>
             <select id="target-user">
@@ -22,10 +18,10 @@
             <button id="start-call-btn">Connect</button>
         </div>
         <div style="display: grid; gap: 10px; margin-bottom: 20px;">
-            <video id="local-video" autoplay playsinline muted style="width: 300px; height: 200px; background: #222;"></video>
-            <video id="remote-video" autoplay playsinline style="width: 300px; height: 200px; background: #222;"></video>
+            <p id="current-user">{{ user.username }}</p>
+            <video id="local-video" autoplay playsinline muted></video>
+            <video id="remote-video" autoplay playsinline></video>
         </div>
-        <p>Private chat</p>
         <textarea id="private-chat-log" cols="75" rows="6" readonly></textarea><br>
         <input id="private-message-input" type="text" size="50"><br>
         <button id="private-message-submit">Send</button>

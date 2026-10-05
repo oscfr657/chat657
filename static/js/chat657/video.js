@@ -1,5 +1,5 @@
 const localVideo = document.getElementById('localVideo');
-const remoteVideosContainer = document.getElementById('remoteVideos');
+const remoteVideosContainer = document.getElementById(`videoGrid`);
 let localStream;
 const peers = {};
 const currentUser = document.querySelector('#current-user').textContent;
@@ -111,12 +111,19 @@ async function createPeerConnection(peerUser) {
     };
     peerConnection.ontrack = (event) => {
         if (!document.getElementById(`video-${peerUser}`)) {
+            const newRemoteDiv = document.createElement('div');
+            newRemoteDiv.id = `user-${peerUser}`;
+            const newUserName = document.createElement('p');
+            newUserName.id = `name-${peerUser}`;
+            newUserName.innerText = `${peerUser}`;
             const newVideo = document.createElement('video');
             newVideo.id = `video-${peerUser}`;
             newVideo.autoplay = true;
             newVideo.playsInline = true;
             newVideo.srcObject = event.streams[0];
-            remoteVideosContainer.appendChild(newVideo);
+            newRemoteDiv.appendChild(newUserName);
+            newRemoteDiv.appendChild(newVideo);
+            remoteVideosContainer.appendChild(newRemoteDiv);
         }
     };
 };
