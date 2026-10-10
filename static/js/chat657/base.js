@@ -24,8 +24,21 @@ roomSocket.onmessage = async function(e) {
             }
         });
     } else if (data.type === 'chat_message') {
-        document.querySelector('#chat-log').value += (data.sender + ": " + data.message + '\n');
-        document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight
+        const new_user_div = document.createElement('div');
+        if (currentUser == data.sender) {
+            new_user_div.classList.add('me');
+        }
+        const new_user_p = document.createElement('p');
+        timestamp = new Date().toLocaleString();
+        new_user_p.textContent = (timestamp + ": " + data.sender + ": ");
+        new_user_div.appendChild(new_user_p);
+        const new_message_div = document.createElement('div');
+        const new_message_p = document.createElement('p');
+        new_message_p.textContent = (" " + data.message);
+        new_message_div.appendChild(new_message_p);
+        document.querySelector('#chat-log').appendChild(new_user_div);
+        document.querySelector('#chat-log').appendChild(new_message_div);
+        document.querySelector('#chat-log').scrollTop = document.querySelector('#chat-log').scrollHeight;
     }
 };
 

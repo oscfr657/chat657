@@ -6,8 +6,34 @@
     text-align: center;
 }
 .chat657 ul {
-    margin: auto;
+    margin: 0;
     width: fit-content;
+    list-style-type: none;
+    padding: 0;
+}
+.chat657 ul li {
+    font-size: 16px;
+}
+.chat657 #chat-log {
+    height: 33vh;
+    border: 1px solid #4c4c4c;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-gap: 0 0.4rem;
+    grid-auto-rows: max-content;
+    overflow: scroll;
+}
+.chat657 #chat-log div {
+    padding: 0 0.5rem;
+    margin: 2px 0;
+}
+.chat657 #chat-log div.me {
+    background: #494949;
+    color: white;
+    border-radius: 7px;
+}
+.chat657 #chat-log p {
+    font-size: 1rem;
 }
 
 #chat-room {

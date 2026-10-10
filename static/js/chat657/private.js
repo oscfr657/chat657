@@ -41,7 +41,9 @@ chatSocket.onmessage = async function(e) {
             }
         });
     } else if (data.type === 'private_message') {
-        document.querySelector('#private-chat-log').value += (data.sender + ": " + data.message + '\n');
+        timestamp = new Date().toLocaleString();
+        document.querySelector('#private-chat-log').value += (timestamp + ": " + data.sender + ": " + data.message + '\n');
+        document.querySelector('#private-chat-log').scrollTop = document.querySelector('#private-chat-log').scrollHeight;
     } else if (data.type === 'webrtc_offer') {
         // Save who called
         activeTargetUser = data.sender;
