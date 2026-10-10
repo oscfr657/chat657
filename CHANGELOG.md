@@ -4,6 +4,12 @@
 
 ## commits ##
 
+### 10 Oct 2026 ###
+
+    docs: updated CHANGELOG
+    build: version 0.2.4a0
+    feat: added time stamp to text chat messages at receiving client side
+
 ### 06 Oct 2026 ###
 
     docs: updated CHANGELOG
