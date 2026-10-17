@@ -41,10 +41,12 @@ class RoomBackgroundImage(models.Model):
         Room,
         on_delete=models.CASCADE,
         related_name='background_images',
-        verbose_name="Room"
+        verbose_name="Room",
     )
     title = models.CharField(max_length=100, verbose_name="Image Title", blank=True)
-    image = models.ImageField(upload_to='room_backgrounds/', verbose_name="Background Image")
+    image = models.ImageField(
+        upload_to='room_backgrounds/', verbose_name="Background Image"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
