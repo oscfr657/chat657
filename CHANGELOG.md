@@ -4,6 +4,17 @@
 
 ## commits ##
 
+### 17 Oct 2026 ###
+
+    docs: updated CHANGELOG
+    build: version 0.3.0a0
+    chore: Black
+    feat: added ability to chose bakground image to video
+    feat: added mediapipe static files
+    feat: added the RoomBackgroundImage model to the RoomAdmin as inline
+    feat: added a RoomBackgroundImage model and migrations!
+    fix: ul margins CSS
+
 ### 10 Oct 2026 ###
 
     docs: updated CHANGELOG
