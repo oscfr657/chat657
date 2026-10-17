@@ -85,8 +85,7 @@ def video(request, room_name):
     if not room:
         return redirect('index')
     context = {
-        "room_name": room.name,
-        "room_slug": room.slug,
+        "room": room,
         'stun_server': settings.STUN_SERVER_URL,
     }
     return render(request, "chat657/video.html", context)

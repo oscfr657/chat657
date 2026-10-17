@@ -16,12 +16,77 @@ const rtcConfig = {
         { 'urls': stunServerUrl }
     ]
 };
+
+let currentBackgroundImage = null;
+
+function changeBackground(imageUrl) {
+    if (!imageUrl) {
+        currentBackgroundImage = null;
+    } else {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.src = imageUrl;
+        img.onload = () => {
+            currentBackgroundImage = img;
+        };
+    }
+}
+
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+const selfieSegmentation = new SelfieSegmentation({
+    locateFile: (file) => { return `/static/js/mediapipe/selfie_segmentation/${file}`;
+    }
+});
+
+selfieSegmentation.setOptions({
+    modelSelection: 1,
+});
+
+selfieSegmentation.onResults((results) => {
+    canvas.width = results.image.width;
+    canvas.height = results.image.height;
+
+    ctx.save();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentBackgroundImage) {
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'destination-in';
+        ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
+    } else {
+        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+    }
+    ctx.restore();
+});
+
 async function getMedia() {
     try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const rawStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        
+        const videoElement = document.createElement('video');
+        videoElement.srcObject = rawStream;
+        videoElement.autoplay = true;
+        videoElement.playsInline = true;
+        await videoElement.play();
+
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await selfieSegmentation.send({ image: videoElement });
+            },
+            width: 640,
+            height: 480
+        });
+        camera.start();
+
+        const processedVideoTrack = canvas.captureStream(30).getVideoTracks()[0];
+        const audioTrack = rawStream.getAudioTracks()[0];
+        localStream = new MediaStream([processedVideoTrack, audioTrack]);
         localVideo.srcObject = localStream;
     } catch (err) {
-        console.error("Could not retrieve media", err);
+        console.error("Kunde inte hämta media eller starta bakgrundsbyte", err);
     }
 };
 chatSocket.onmessage = async function(event) {
