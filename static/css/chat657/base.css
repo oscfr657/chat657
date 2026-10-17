@@ -6,7 +6,7 @@
     text-align: center;
 }
 .chat657 ul {
-    margin: 0;
+    margin: auto;
     width: fit-content;
     list-style-type: none;
     padding: 0;
@@ -39,6 +39,9 @@
 #chat-room {
     margin: auto;
     width: fit-content;
+}
+ul#chat-users {
+    margin: 0;
 }
 
 #videoGrid p {
