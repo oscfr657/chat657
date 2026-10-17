@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Room
+from .models import Room, RoomBackgroundImage
+
+
+class RoomBackgroundImageInline(admin.TabularInline):
+    model = RoomBackgroundImage
+    extra = 1
 
 
 @admin.register(Room)
@@ -10,3 +15,4 @@ class RoomAdmin(admin.ModelAdmin):
     search_fields = ('name', 'slug', 'owner__username')
     prepopulated_fields = {'slug': ('name',)}
     filter_horizontal = ('participants',)
+    inlines = [RoomBackgroundImageInline]
