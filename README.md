@@ -207,6 +207,12 @@ python manage.py collectstatic
 
 ## For development ##
 
+### Mediapipe sources ###
+
+https://www.jsdelivr.com/package/npm/@mediapipe/camera_utils?tab=files
+
+https://www.jsdelivr.com/package/npm/@mediapipe/selfie_segmentation?tab=files
+
 ### Testing ###
 
 In the settings file add daphne to the top of the INSTALLED_APPS

@@ -31,9 +31,13 @@ views.py
 ./static/js/chat657/private.js
 ./static/js/chat657/video.js
 ./static/js/mediapipe/camera_utils/camera_utils.js
+./static/js/mediapipe/camera_utils/camera_utils.min.js
 ./static/js/mediapipe/selfie_segmentation/selfie_segmentation.binarypb
 ./static/js/mediapipe/selfie_segmentation/selfie_segmentation.js
+./static/js/mediapipe/selfie_segmentation/selfie_segmentation.min.js
+./static/js/mediapipe/selfie_segmentation/selfie_segmentation.tflite
 ./static/js/mediapipe/selfie_segmentation/selfie_segmentation_landscape.tflite
+./static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_simd_wasm_bin.data
 ./static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_simd_wasm_bin.js
 ./static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_simd_wasm_bin.wasm
 ./static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_wasm_bin.js
@@ -57,9 +61,13 @@ static/js/chat657/base.js
 static/js/chat657/private.js
 static/js/chat657/video.js
 static/js/mediapipe/camera_utils/camera_utils.js
+static/js/mediapipe/camera_utils/camera_utils.min.js
 static/js/mediapipe/selfie_segmentation/selfie_segmentation.binarypb
 static/js/mediapipe/selfie_segmentation/selfie_segmentation.js
+static/js/mediapipe/selfie_segmentation/selfie_segmentation.min.js
+static/js/mediapipe/selfie_segmentation/selfie_segmentation.tflite
 static/js/mediapipe/selfie_segmentation/selfie_segmentation_landscape.tflite
+static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_simd_wasm_bin.data
 static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_simd_wasm_bin.js
 static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_simd_wasm_bin.wasm
 static/js/mediapipe/selfie_segmentation/selfie_segmentation_solution_wasm_bin.js

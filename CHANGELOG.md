@@ -4,6 +4,15 @@
 
 ## commits ##
 
+### 25 Oct 2026 ###
+
+    build: version 0.4.0a0
+    fix: removed black video borders with improved css
+    fix: updaded and added missing mediapipe and minified js files
+    feat: changed selfieSegmentation modelSelection to general model
+    fix: translations of error logs in video.js
+    fix: removed width and height limit on video
+
 ### 17 Oct 2026 ###
 
     docs: updated CHANGELOG
