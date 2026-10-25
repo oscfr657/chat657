@@ -84,7 +84,7 @@ async function getMedia() {
         localStream = new MediaStream([processedVideoTrack, audioTrack]);
         localVideo.srcObject = localStream;
     } catch (err) {
-        console.error("Kunde inte hämta media eller starta bakgrundsbyte", err);
+        console.error("Was unable to connect to media device or start background change", err);
     }
 };
 chatSocket.onmessage = async function(event) {
@@ -151,7 +151,7 @@ async function createPeerConnection(peerUser) {
     peers[peerUser] = peerConnection;
     peerConnection.oniceconnectionstatechange = () => {
         if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
-            console.log(`Anslutningen till ${peerUser} bröts oväntat.`);
+            console.log(`The connection to ${peerUser} was unexpectedly lost.`);
             if (peers[peerUser]) {
                 peers[peerUser].close();
                 delete peers[peerUser];
