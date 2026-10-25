@@ -69,8 +69,7 @@ ul#chat-users {
     background: #222;
 }
 video#localVideo {
-    max-width: 30vw;
-    max-height: 30vh;
+    max-height: 32vh;
     min-width: 300px;
 }
 
