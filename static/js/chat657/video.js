@@ -40,7 +40,7 @@ const selfieSegmentation = new SelfieSegmentation({
 });
 
 selfieSegmentation.setOptions({
-    modelSelection: 1,
+    modelSelection: 0,
 });
 
 selfieSegmentation.onResults((results) => {
