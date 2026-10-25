@@ -75,9 +75,7 @@ async function getMedia() {
         const camera = new Camera(videoElement, {
             onFrame: async () => {
                 await selfieSegmentation.send({ image: videoElement });
-            },
-            width: 640,
-            height: 480
+            }
         });
         camera.start();
 
