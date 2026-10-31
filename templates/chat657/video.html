@@ -20,6 +20,15 @@
         </select>
     </div>
 
+    <div id="resolutionSelectorContainer">
+        <label for="resolutionSelect"><strong>Change resolution:</strong></label>
+        <select id="resolutionSelect" onchange="changeResolution(this.value)">
+            <option value="low">360p (Low)</option>
+            <option value="hd" selected>720p (HD)</option>
+            <option value="fhd">1080p (Full HD)</option>
+        </select>
+    </div>
+
     <div id="videoGrid">
         <div id="user-{{ user.username }}">
             <p id="current-user">{{ user.username }}</p>

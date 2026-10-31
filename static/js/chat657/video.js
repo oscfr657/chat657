@@ -32,6 +32,15 @@ function changeBackground(imageUrl) {
     }
 }
 
+const resolutions = {
+    'low': { width: { ideal: 640 }, height: { ideal: 360 } },
+    'hd':  { width: { ideal: 1280 }, height: { ideal: 720 } },
+    'fhd': { width: { ideal: 1920 }, height: { ideal: 1080 } }
+};
+
+let currentResolutionKey = 'hd';
+let camera = null;
+
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 const selfieSegmentation = new SelfieSegmentation({
@@ -55,41 +64,52 @@ selfieSegmentation.onResults((results) => {
         ctx.globalCompositeOperation = 'destination-in';
         ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
         ctx.globalCompositeOperation = 'destination-over';
-        ctx.drawImage(currentBackgroundImage, 0, 0, canvas.width, canvas.height);
+        drawCoverImage(ctx, currentBackgroundImage, canvas.width, canvas.height);
     } else {
         ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
     }
     ctx.restore();
 });
 
-async function getMedia() {
+async function getMedia(resolutionKey = 'hd') {
     try {
-        const rawStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        
+        currentResolutionKey = resolutionKey;
+        const constraints = {
+            video: resolutions[resolutionKey],
+            audio: true
+        };
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+        }
+        const rawStream = await navigator.mediaDevices.getUserMedia(constraints);
         const videoElement = document.createElement('video');
         videoElement.srcObject = rawStream;
         videoElement.autoplay = true;
         videoElement.playsInline = true;
         await videoElement.play();
-
-        const camera = new Camera(videoElement, {
+        if (camera) {
+            camera.stop();
+        }
+        camera = new Camera(videoElement, {
             onFrame: async () => {
                 await selfieSegmentation.send({ image: videoElement });
-            }
+            },
+            width: resolutions[resolutionKey].width.ideal,
+            height: resolutions[resolutionKey].height.ideal
         });
         camera.start();
-
         const processedVideoTrack = canvas.captureStream(30).getVideoTracks()[0];
         const audioTrack = rawStream.getAudioTracks()[0];
         localStream = new MediaStream([processedVideoTrack, audioTrack]);
         localVideo.srcObject = localStream;
+        updatePeersTrack(processedVideoTrack);
     } catch (err) {
         console.error("Was unable to connect to media device or start background change", err);
     }
 };
 chatSocket.onmessage = async function(event) {
     if (!localStream) {
-        await getMedia();
+        await getMedia('hd');
     }
     const message = JSON.parse(event.data);
     const actionType = message.type;
@@ -190,3 +210,38 @@ async function createPeerConnection(peerUser) {
         }
     };
 };
+
+async function changeResolution(resolutionKey) {
+    console.log(`Change resolution to: ${resolutionKey}`);
+    await getMedia(resolutionKey);
+}
+
+function updatePeersTrack(newVideoTrack) {
+    for (const peerUser in peers) {
+        const peerConnection = peers[peerUser];
+        const sender = peerConnection.getSenders().find(s => s.track && s.track.kind === 'video');
+        if (sender) {
+            sender.replaceTrack(newVideoTrack).catch(err => {
+                console.error(`Kunde inte uppdatera videospår för ${peerUser}:`, err);
+            });
+        }
+    }
+}
+
+function drawCoverImage(ctx, img, canvasWidth, canvasHeight) {
+    const imgRatio = img.width / img.height;
+    const canvasRatio = canvasWidth / canvasHeight;
+    let renderWidth, renderHeight, offsetX, offsetY;
+    if (canvasRatio > imgRatio) {
+        renderWidth = canvasWidth;
+        renderHeight = canvasWidth / imgRatio;
+        offsetX = 0;
+        offsetY = (canvasHeight - renderHeight) / 2;
+    } else {
+        renderWidth = canvasHeight * imgRatio;
+        renderHeight = canvasHeight;
+        offsetX = (canvasWidth - renderWidth) / 2;
+        offsetY = 0;
+    }
+    ctx.drawImage(img, offsetX, offsetY, renderWidth, renderHeight);
+}
