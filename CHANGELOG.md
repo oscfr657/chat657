@@ -4,6 +4,12 @@
 
 ## commits ##
 
+### 31 Oct 2026 ###
+
+    build: version 0.5.0a0
+    feat: added the ability to change the video resolution
+    feat: improved responsive design with CSS
+
 ### 25 Oct 2026 ###
 
     build: version 0.4.0a0

@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: chat657
-Version: 0.4.0a0
+Version: 0.5.0a0
 Summary: A simple chat.
 Author: Oscar F
 License-Expression: MIT
@@ -234,11 +234,11 @@ python manage.py collectstatic
 
 ## For development ##
 
+### Mediapipe sources ###
 
 https://www.jsdelivr.com/package/npm/@mediapipe/camera_utils?tab=files
 
 https://www.jsdelivr.com/package/npm/@mediapipe/selfie_segmentation?tab=files
-
 
 ### Testing ###
 
