@@ -50,7 +50,12 @@ ul#chat-users {
     margin-bottom: 0.5em;
 }
 
-
+#videoGrid {
+    display: grid;
+    margin: auto;
+    max-width: 1600px;
+    grid-template-columns: auto;
+}
 #videoGrid p {
     height: 0px;
     font-size: 1rem;
@@ -58,19 +63,15 @@ ul#chat-users {
     position: relative;
     color: white;
     top: 0.5rem;
-    left: 1rem;
 }
 #videoGrid > div {
     margin: auto;
-    width: fit-content;
+    text-align: center;
 }
 #videoGrid video {
-    max-height: 50vh;
+    display: block;
     background: #222;
-}
-video#localVideo {
-    max-height: 32vh;
-    min-width: 300px;
+    width: 100%;
 }
 
 #private-chat {
@@ -87,4 +88,13 @@ video#localVideo {
     color: white;
     text-shadow: black 1px 1px 0;
     position: absolute;
+}
+
+@media (min-width: 601px) {
+    #videoGrid {
+        grid-template-columns: auto auto;
+    }
+    #videoGrid video {
+        width: min(50vw, 800px);
+    }
 }
