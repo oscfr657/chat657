@@ -44,6 +44,7 @@ ul#chat-users {
     margin: 0;
 }
 
+#resolutionSelectorContainer,
 #bgSelectorContainer {
     max-width: fit-content;
     margin: auto;
@@ -69,6 +70,8 @@ ul#chat-users {
     text-align: center;
 }
 #videoGrid video {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     display: block;
     background: #222;
     width: 100%;

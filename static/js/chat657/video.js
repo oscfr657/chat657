@@ -53,20 +53,27 @@ selfieSegmentation.setOptions({
 });
 
 selfieSegmentation.onResults((results) => {
-    canvas.width = results.image.width;
-    canvas.height = results.image.height;
+    const rawWidth = results.image.width;
+    const rawHeight = results.image.height;
+
+    const size = Math.min(rawWidth, rawHeight);
+    canvas.width = size;
+    canvas.height = size;
+
+    const offsetX = (size - rawWidth) / 2;
+    const offsetY = (size - rawHeight) / 2;
 
     ctx.save();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, size, size);
 
     if (currentBackgroundImage) {
-        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(results.image, offsetX, offsetY, rawWidth, rawHeight);
         ctx.globalCompositeOperation = 'destination-in';
-        ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(results.segmentationMask, offsetX, offsetY, rawWidth, rawHeight);
         ctx.globalCompositeOperation = 'destination-over';
-        drawCoverImage(ctx, currentBackgroundImage, canvas.width, canvas.height);
+        drawCoverImage(ctx, currentBackgroundImage, size, size);
     } else {
-        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(results.image, offsetX, offsetY, rawWidth, rawHeight);
     }
     ctx.restore();
 });
