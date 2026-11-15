@@ -123,6 +123,11 @@ async function getMedia(resolutionKey = 'hd') {
 chatSocket.onmessage = async function(event) {
     if (!localStream) {
         await getMedia('hd');
+        // If media setup failed, abort handling so we don't crash downstream
+        if (!localStream) {
+            console.error("Aborting message handling: local media stream is not available.");
+            return;
+        }
     }
     const message = JSON.parse(event.data);
     const actionType = message.type;
@@ -148,7 +153,7 @@ chatSocket.onmessage = async function(event) {
                 if (!activeUsernames.includes(peerUser)) {
                     peers[peerUser].close();
                     delete peers[peerUser];
-                    const videoEl = document.getElementById(`video-${peerUser}`);
+                    const videoEl = document.getElementById(`user-${peerUser}`);
                     if (videoEl) videoEl.remove();
                 }
             }
@@ -191,13 +196,18 @@ async function createPeerConnection(peerUser) {
                 peers[peerUser].close();
                 delete peers[peerUser];
             }
-            const videoEl = document.getElementById(`video-${peerUser}`);
+            const videoEl = document.getElementById(`user-${peerUser}`);
             if (videoEl) videoEl.remove();
         }
     };
-    localStream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, localStream);
-    });
+    // Safely check if localStream exists before grabbing tracks
+    if (localStream) {
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
+        });
+    } else {
+        console.warn("Skipping local tracks: localStream is uninitialized.");
+    }
     peerConnection.onicecandidate = event => {
         if (event.candidate) {
             chatSocket.send(JSON.stringify({

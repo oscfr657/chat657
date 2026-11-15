@@ -49,7 +49,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if not self.room_access:
             await self.close()
             return
-        
+
         # Cache the user's general channel
         await database_sync_to_async(set_user_channel)(
             self.site_id, self.user.username, self.channel_name
