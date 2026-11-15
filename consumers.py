@@ -1,4 +1,7 @@
 import json
+
+from urllib.parse import parse_qs
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.contrib.sites.models import Site
@@ -14,6 +17,8 @@ from .utils import (
     get_user_channels,
     remove_user_channel,
     remove_user_from_active_users_list,
+    set_user_video_channel,
+    remove_user_video_channel,
 )
 
 
@@ -32,17 +37,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
         self.room_group_name = f'chat_site_{self.site_id}_room_{self.room_name}'
         self.user = self.scope["user"]
+
+        # Check if connection is from the video page via query string
+        query_string = self.scope['query_string'].decode()
+        query_params = parse_qs(query_string)
+        self.is_video = query_params.get('client', [None])[0] == 'video'
+
         self.room_access = await self.get_user_room_access(
             self.user, self.room_name, self.site_id
         )
         if not self.room_access:
             await self.close()
             return
-        # Cache the user's channel
+        
+        # Cache the user's general channel
         await database_sync_to_async(set_user_channel)(
             self.site_id, self.user.username, self.channel_name
         )
-        # Mark user as active (synchronous function done asynchronously)
+        # If video client, cache video channel
+        if self.is_video:
+            await database_sync_to_async(set_user_video_channel)(
+                self.site_id, self.user.username, self.channel_name
+            )
+
         await database_sync_to_async(mark_user_as_active)(
             self.site_id, self.room_name, self.user
         )
@@ -61,9 +78,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         if hasattr(self, 'room_group_name'):
+            # Remove the specific channel
             await database_sync_to_async(remove_user_channel)(
                 self.site_id, self.user.username, self.channel_name
             )
+            if getattr(self, 'is_video', False):
+                await database_sync_to_async(remove_user_video_channel)(
+                    self.site_id, self.user.username, self.channel_name
+                )
             await self.channel_layer.group_discard(
                 self.room_group_name, self.channel_name
             )
@@ -71,7 +93,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             # If the user is just navigating to the video page, do not update the user list
             if getattr(self, 'is_transitioning', False):
                 return
-        
+
             # Check if the user has any other open channels/tabs in this site
             remaining_channels = await database_sync_to_async(get_user_channels)(
                 self.site_id, self.user.username

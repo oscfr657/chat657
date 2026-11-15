@@ -18,7 +18,7 @@ def mark_user_as_active(site_id, room_name, user):
 
 
 def get_active_users(site_id, room_name):
-    """Returns a list of usernames that have been active in the last 5 minutes."""
+    """Returns a list of active users with their video status."""
     cache_key = f"active_users_{site_id}_{room_name}"
     active_users = cache.get(cache_key, {})
 
@@ -28,7 +28,8 @@ def get_active_users(site_id, room_name):
     # Filter out users who have been inactive for longer than 5 minutes
     for username, last_seen in active_users.items():
         if (now - last_seen).total_seconds() < 300:
-            valid_users.append(username)
+            in_video = is_user_in_video(site_id, username)
+            valid_users.append({'username': username, 'in_video': in_video})
     return valid_users
 
 
@@ -80,3 +81,31 @@ def remove_user_from_active_users_list(site_id, room_name, username):
     if username in active_users:
         del active_users[username]
         cache.set(cache_key, active_users, timeout=300)
+
+def set_user_video_channel(site_id, username, channel_name):
+    """Adds a user's video channel name to a set in the cache."""
+    cache_key = f"user_video_channel_{site_id}_{username}"
+    channels = cache.get(cache_key, set())
+    if isinstance(channels, list):
+        channels = set(channels)
+    channels.add(channel_name)
+    cache.set(cache_key, channels, timeout=3600)
+
+def remove_user_video_channel(site_id, username, channel_name):
+    """Removes a specific video channel from the user's active video channels."""
+    cache_key = f"user_video_channel_{site_id}_{username}"
+    channels = cache.get(cache_key, set())
+    if isinstance(channels, list):
+        channels = set(channels)
+    if channel_name in channels:
+        channels.remove(channel_name)
+    if channels:
+        cache.set(cache_key, channels, timeout=3600)
+    else:
+        cache.delete(cache_key)
+
+def is_user_in_video(site_id, username):
+    """Checks if a user has an active video channel."""
+    cache_key = f"user_video_channel_{site_id}_{username}"
+    channels = cache.get(cache_key, set())
+    return len(channels) > 0

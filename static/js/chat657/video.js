@@ -9,7 +9,7 @@ const chatSocket = new WebSocket(
     + window.location.host
     + '/ws/chat/'
     + roomName
-    + '/'
+    + '/?client=video'
 );
 const rtcConfig = {
     'iceServers': [
@@ -130,7 +130,8 @@ chatSocket.onmessage = async function(event) {
     switch (actionType) {
         case 'user_list_update':
             const activeUsers = message.users;
-            for (const user of activeUsers) {
+            for (const userItem of activeUsers) {
+                const user = typeof userItem === 'string' ? userItem : userItem.username;
                 if (user !== currentUser && !peers[user]) {
                     await createPeerConnection(user);
                     const offer = await peers[user].createOffer();
@@ -143,7 +144,8 @@ chatSocket.onmessage = async function(event) {
                 }
             }
             for (const peerUser in peers) {
-                if (!activeUsers.includes(peerUser)) {
+                const activeUsernames = activeUsers.map(u => typeof u === 'string' ? u : u.username);
+                if (!activeUsernames.includes(peerUser)) {
                     peers[peerUser].close();
                     delete peers[peerUser];
                     const videoEl = document.getElementById(`video-${peerUser}`);

@@ -16,10 +16,20 @@ roomSocket.onmessage = async function(e) {
     const data = JSON.parse(e.data);
     if (data.type === 'user_list_update') {
         chatUsers.innerHTML = '';
-        data.users.forEach(user => {
-            if (user !== currentUser) {
+        data.users.forEach(userData => {
+            const username = typeof userData === 'string' ? userData : userData.username;
+            const inVideo = typeof userData === 'object' && userData.in_video;
+
+            if (username !== currentUser) {
                 const li = document.createElement('li');
-                li.textContent = user;
+                li.textContent = username;
+                // Add indication if user is in video chat
+                if (inVideo) {
+                    const videoBadge = document.createElement('span');
+                    videoBadge.textContent = '(In Video)';
+                    videoBadge.classList.add('video-badge');
+                    li.appendChild(videoBadge);
+                }
                 chatUsers.appendChild(li);
             }
         });
