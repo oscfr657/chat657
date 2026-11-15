@@ -54,3 +54,14 @@ document.querySelector('#chat-message-submit').onclick = function() {
     }
     messageInputDom.value = '';
 };
+
+document.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        // Check if the link points to your video page route
+        if (this.getAttribute('href') && this.getAttribute('href').includes('video')) {
+            if (roomSocket && roomSocket.readyState === WebSocket.OPEN) {
+                roomSocket.send(JSON.stringify({ type: 'navigating_to_video' }));
+            }
+        }
+    });
+});

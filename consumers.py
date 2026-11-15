@@ -68,6 +68,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.room_group_name, self.channel_name
             )
 
+            # If the user is just navigating to the video page, do not update the user list
+            if getattr(self, 'is_transitioning', False):
+                return
+        
             # Check if the user has any other open channels/tabs in this site
             remaining_channels = await database_sync_to_async(get_user_channels)(
                 self.site_id, self.user.username
@@ -142,6 +146,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                             'sender': self.user.username,
                         },
                     )
+        elif action_type == 'navigating_to_video':
+            self.is_transitioning = True
 
     async def broadcast_user_list(self):
         active_users_list = await database_sync_to_async(get_active_users)(
