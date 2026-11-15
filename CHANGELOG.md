@@ -4,6 +4,20 @@
 
 ## commits ##
 
+### 15 Nov 2026 ###
+
+    build: version 0.6.0a0
+    chore: Black
+    doc(README): updated CHANNEL_LAYERS config setup
+    fix: cleanup, video localstream check, and correctly removing user videos from the html
+    feat: chat user list now indicate when a user is in the video chat
+    feat: update the user list immediately when a user leaves the chat room while preventing it when they switch to the video page
+    feat: ensure the user list updates instantly when someone navigate away
+
+### 14 Nov 2026 ###
+
+    feat: square videos
+
 ### 31 Oct 2026 ###
 
     build: version 0.5.0a0

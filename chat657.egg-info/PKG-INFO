@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: chat657
-Version: 0.5.0a0
+Version: 0.6.0a0
 Summary: A simple chat.
 Author: Oscar F
 License-Expression: MIT
@@ -163,7 +163,14 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [
+                {
+                    "address": REDIS_URL,
+                    "socket_timeout": None,
+                }
+            ],
+            "capacity": 1500,
+            "expiry": 60,
         },
     },
 }
