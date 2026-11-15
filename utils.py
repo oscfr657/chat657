@@ -73,6 +73,7 @@ def remove_user_channel(site_id, username, channel_name):
     else:
         cache.delete(cache_key)
 
+
 def remove_user_from_active_users_list(site_id, room_name, username):
     """Removes a user entirely from the active users cache for the room."""
     cache_key = f"active_users_{site_id}_{room_name}"
@@ -82,6 +83,7 @@ def remove_user_from_active_users_list(site_id, room_name, username):
         del active_users[username]
         cache.set(cache_key, active_users, timeout=300)
 
+
 def set_user_video_channel(site_id, username, channel_name):
     """Adds a user's video channel name to a set in the cache."""
     cache_key = f"user_video_channel_{site_id}_{username}"
@@ -90,6 +92,7 @@ def set_user_video_channel(site_id, username, channel_name):
         channels = set(channels)
     channels.add(channel_name)
     cache.set(cache_key, channels, timeout=3600)
+
 
 def remove_user_video_channel(site_id, username, channel_name):
     """Removes a specific video channel from the user's active video channels."""
@@ -103,6 +106,7 @@ def remove_user_video_channel(site_id, username, channel_name):
         cache.set(cache_key, channels, timeout=3600)
     else:
         cache.delete(cache_key)
+
 
 def is_user_in_video(site_id, username):
     """Checks if a user has an active video channel."""
