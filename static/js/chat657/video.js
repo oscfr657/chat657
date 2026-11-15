@@ -48,6 +48,12 @@ const selfieSegmentation = new SelfieSegmentation({
     }
 });
 
+window.addEventListener('pagehide', () => {
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.close();
+    }
+});
+
 selfieSegmentation.setOptions({
     modelSelection: 0,
 });

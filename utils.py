@@ -71,3 +71,12 @@ def remove_user_channel(site_id, username, channel_name):
         cache.set(cache_key, channels, timeout=3600)
     else:
         cache.delete(cache_key)
+
+def remove_user_from_active_users_list(site_id, room_name, username):
+    """Removes a user entirely from the active users cache for the room."""
+    cache_key = f"active_users_{site_id}_{room_name}"
+    active_users = cache.get(cache_key, {})
+
+    if username in active_users:
+        del active_users[username]
+        cache.set(cache_key, active_users, timeout=300)

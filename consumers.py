@@ -13,6 +13,7 @@ from .utils import (
     set_user_channel,
     get_user_channels,
     remove_user_channel,
+    remove_user_from_active_users_list,
 )
 
 
@@ -66,6 +67,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(
                 self.room_group_name, self.channel_name
             )
+
+            # Check if the user has any other open channels/tabs in this site
+            remaining_channels = await database_sync_to_async(get_user_channels)(
+                self.site_id, self.user.username
+            )
+
+            # If no channels are left open, remove them from active room users immediately
+            if not remaining_channels:
+                await database_sync_to_async(remove_user_from_active_users_list)(
+                    self.site_id, self.room_name, self.user.username
+                )
+            # Broadcast the updated list to everyone else in the room
             await self.broadcast_user_list()
 
     async def receive(self, text_data):
